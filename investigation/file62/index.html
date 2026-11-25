@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="BTCX file 62 — reproducible Gaussian splat scene investigation.">
+<title>BTCX / File 62 — Evidence Explorer</title>
+<style>
+:root{--bg:#0b101b;--surface:#121b2a;--panel:#172232;--line:#2b3a4d;--muted:#a1b1c5;--text:#ecf2f9;--accent:#8fd2ef;--gold:#f1c27d}
+*{box-sizing:border-box}
+html,body{min-height:100%;margin:0;background:var(--bg);color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif}
+a{color:var(--accent);text-underline-offset:3px}
+button,input,select{font:inherit}
+button,select,input[type=file]{background:#1d3045;color:var(--text);border:1px solid #42546a;border-radius:7px;padding:9px 11px}
+button{cursor:pointer}
+button:hover{border-color:var(--accent)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:16px 22px;border-bottom:1px solid var(--line);background:#101b2a}
+h1{margin:3px 0;font-size:clamp(19px,2.4vw,28px);letter-spacing:-.04em}
+h2{font-size:16px;margin:0 0 11px}
+.eyebrow{font-size:11px;letter-spacing:.16em;font-weight:700;color:#9dc8e2;text-transform:uppercase}
+.sub{color:var(--muted);font-size:12px;margin-top:4px}
+.nav{display:flex;gap:15px;flex-wrap:wrap;font-size:12px;text-align:right}
+main{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:12px;padding:12px;max-width:1750px;margin:auto}
+.viewer{position:relative;min-height:550px;background:#0c1018;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+#scene{display:block;width:100%;height:clamp(480px,78vh,980px);touch-action:none}
+.viewer .help{position:absolute;left:14px;bottom:12px;pointer-events:none;color:#c0cfe1;font-size:12px;background:#0d1526d4;padding:8px 11px;border-radius:7px}
+#comparelabels{position:absolute;inset:12px 0 auto;display:flex;pointer-events:none}
+#comparelabels span{flex:1;text-align:center;font-size:12px;color:#fff;text-shadow:0 1px 5px #000;background:#1f3548a8;margin:0 10px;border-radius:4px;padding:7px}
+aside{display:flex;flex-direction:column;gap:12px;min-width:0}
+section{background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:15px}
+label{display:block;margin-bottom:7px;font-weight:600;font-size:13px}
+select,input[type=range]{width:100%}
+input[type=range]{accent-color:#97cce9}
+.field{margin:13px 0}
+.field .row{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.helptext{font-size:12px;line-height:1.5;color:var(--muted);margin:8px 0 0}
+.result{font-size:12px;line-height:1.5;overflow-wrap:anywhere;background:#0f1724;border:1px solid #28384a;border-radius:7px;padding:10px;margin-top:12px}
+.result.error{border-color:#b46c64;color:#ffd1c5}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.actions button{font-size:12px}
+small{color:var(--muted)}
+ul{margin:8px 0;padding-left:20px}
+li{margin:7px 0}
+details{border-top:1px solid var(--line);padding:12px 0;font-size:12px;line-height:1.5}
+summary{cursor:pointer;font-weight:600}
+.mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}
+footer{max-width:1400px;margin:4px auto 25px;padding:15px 25px;color:var(--muted);font-size:12px;line-height:1.6}
+#fallback{border:1px solid #b47a43;border-radius:8px;background:#241b19;color:#ffd9a1;padding:12px;margin-top:10px;font-size:12px}
+[hidden]{display:none!important}
+@media(max-width:1000px){main{grid-template-columns:1fr}.viewer{min-height:390px}#scene{height:58vh;min-height:380px}header{align-items:flex-start}.nav{justify-content:flex-end}}
+@media(max-width:600px){header{padding:12px;display:block}.nav{text-align:left;margin-top:8px}main{padding:7px;gap:8px}.viewer .help{font-size:10px}}
+</style>
+</head>
+<body>
+<header>
+ <div><div class="eyebrow">BTCX · Investigation 002E</div><h1>File 62 / 3D Evidence Explorer</h1><div class="sub">Full anisotropic Gaussian rendering · source-linked · independent viewer</div></div>
+ <nav class="nav">
+  <a href="../../README.md">Original README</a>
+  <a href="https://github.com/suebtwist/btcx-files/issues/12" target="_blank" rel="noopener noreferrer">Investigation #12</a>
+  <a href="./DATA_SOURCES.md">Provenance &amp; methods</a>
+ </nav>
+</header>
+<main>
+ <div class="viewer">
+  <canvas id="scene" aria-label="Interactive Gaussian splat scene. Drag to turn, scroll to move, WASD to move." tabindex="0"></canvas>
+  <div id="comparelabels" hidden><span>Unmasked scene</span><span>Without selected 1,414 splats</span></div>
+  <div class="help">Drag: look around · Wheel: move · W/A/S/D: fly · Q/E: vertical · Shift: faster</div>
+ </div>
+ <aside>
+  <section>
+   <h2>Source status</h2>
+   <div id="status" class="result" aria-live="polite">Initializing WebGL2…</div>
+   <p class="helptext mono" id="counts">Waiting for file 62.</p>
+   <p class="helptext" id="verification"></p>
+   <details><summary>Integrity details</summary><p class="helptext mono" id="hash">Source SHA-256 will be calculated after loading.</p><p class="helptext">Expected input: 184,148 records × 32 bytes = 5,892,736 bytes. The source comes from your fork's decoded export.</p></details>
+   <div id="fallback" hidden>
+    The browser couldn't load the model automatically. <a href="./data/file62.splat">Download the bundled SPLAT</a>, then choose it below, or <a href="https://antimatter15.com/splat/?url=https%3A%2F%2Fraw.githubusercontent.com%2Forbiterdevelopment%2Fbtcx-files%2Fbtc-x%2Ffile62-investigation-viewer%2Finvestigation%2Ffile62%2Fdata%2Ffile62.splat">open the external viewer</a>.
+   </div>
+  </section>
+  <section>
+   <h2>Camera &amp; experiment</h2>
+   <div class="field">
+    <label for="preset">Fixed camera preset</label>
+    <select id="preset">
+     <option value="capture">Capture convention — wide</option>
+     <option value="figure">Figure — origin, aimed at region</option>
+     <option value="front">Fly-through: Z = 18 (approach)</option>
+     <option value="entry">Fly-through: Z = 20</option>
+     <option value="inside">Fly-through: Z = 22.5</option>
+     <option value="exit">Fly-through: Z = 27</option>
+     <option value="lookback">Fly-through: look back</option>
+     <option value="far">Distant reported structure</option>
+    </select>
+   </div>
+   <div class="field">
+    <label for="mask">Visible splats</label>
+    <select id="mask">
+     <option value="all">All (unaltered)</option>
+     <option value="compare">Side-by-side: unmasked / figure removed</option>
+     <option value="figure">Only published 1,414-point figure box</option>
+     <option value="exclude">Remove published figure box</option>
+     <option value="fog">Remove published zoom fog mask</option>
+     <option value="behind">Only depths 40–55 (candidate rectangle)</option>
+    </select>
+   </div>
+   <div class="field">
+    <div class="row"><label for="opacity">Minimum source opacity</label><strong id="opacityValue">0%</strong></div>
+    <input id="opacity" type="range" min="0" max="95" value="0" step="5">
+   </div>
+   <div class="field">
+    <div class="row"><label for="fov">Vertical field of view</label><strong id="fovValue">38°</strong></div>
+    <input id="fov" type="range" min="8" max="80" value="38" step="1">
+   </div>
+   <p class="helptext" id="visible">Visible splats: pending</p>
+   <p class="helptext mono" id="pose">Camera: initial convention</p>
+   <div class="actions">
+    <button type="button" id="reset">Reset scene</button>
+    <button type="button" id="snapshot">Save PNG</button>
+    <button type="button" id="copy">Copy camera data</button>
+    <button type="button" onclick="document.getElementById('sourcefile').click()">Load local .splat</button>
+   </div>
+   <input type="file" id="sourcefile" accept=".splat" hidden>
+  </section>
+  <section>
+   <h2>Interpreting the visuals</h2>
+   <div class="helptext">
+    <p><strong>Figure selection:</strong> 6 &lt; X &lt; 7.9, −4.6 &lt; Y &lt; −1, 21 &lt; Z &lt; 24 (strict bounds).</p>
+    <p><strong>Fog removal:</strong> 15 &lt; Z &lt; 32, atan2(X,Z) &gt; 2°, keeping figure splats. This recreates the published <em>zoom selection rule</em>, not the author's exact image pipeline.</p>
+    <p><strong>Critical test:</strong> A supposed wall or figure should remain interpretable when the surrounding scene is restored. Off-axis degradation alone is not decisive for a single-view reconstruction.</p>
+    <p><strong>Not evidence of:</strong> a human, a real building, historical capture, or paranormal content. Objects have not been authenticated.</p>
+   </div>
+  </section>
+  <section>
+   <h2>All published file 62 data</h2>
+   <p class="helptext"><a href="./data/file62.splat">SPLAT export · 5.89 MB</a></p>
+   <p class="helptext"><a href="./data/file62.ply">PLY export · 45.67 MB · degree-3 SH</a></p>
+   <p class="helptext"><a href="../../20180208_1142.bin">Original 24.86 MB binary</a></p>
+   <p class="helptext"><a href="https://github.com/user-attachments/files/34353897/file62-code.zip">Contributor's decoding and rendering source ZIP</a></p>
+   <p class="helptext"><a href="https://github.com/user-attachments/files/34211501/btcx-file62-report.pdf">Original published analysis PDF</a></p>
+  </section>
+ </aside>
+</main>
+<footer>
+ <p><strong>Method:</strong> Original byte values are not overwritten. The GPU viewer projects covariance-rotated elliptical Gaussians and sorts them back-to-front for alpha blending. Its output is not expected to match the publisher's CPU renderer pixel-for-pixel: it does not reproduce PLY degree-3 spherical harmonics, adaptive exposure, or every rasterization detail. Load the PLY in <a href="https://superspl.at/editor" target="_blank" rel="noopener noreferrer">SuperSplat</a> for the full published appearance coefficients.</p>
+ <p>Sources: <a href="https://github.com/suebtwist/btcx-files/issues/12">original investigation</a> and <a href="https://github.com/suebtwist/btcx-files/pull/13">decoded exports PR #13</a>. Documentation is research attribution, not proof of file provenance or object identity.</p>
+</footer>
+<script src="./viewer.js" defer></script>
+</body>
+</html>
