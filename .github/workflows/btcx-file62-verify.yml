@@ -1,0 +1,33 @@
+name: Verify BTCX File 62 Data
+
+on:
+  push:
+    branches:
+      - btc-x/file62-investigation-viewer
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'investigation/file62/**'
+      - '.github/workflows/btcx-file62-verify.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check viewer JavaScript syntax
+        run: node --check investigation/file62/viewer.js
+      - name: Verify export hashes, selected coordinates and controls
+        run: python3 investigation/file62/analyze.py --output investigation/file62/analysis-results.json
+      - name: Upload measurements
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: btcx-file62-analysis
+          path: investigation/file62/analysis-results.json
+          if-no-files-found: warn
