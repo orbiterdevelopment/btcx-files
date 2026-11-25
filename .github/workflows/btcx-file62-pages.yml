@@ -27,6 +27,12 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Check viewer JavaScript syntax
+        run: node --check investigation/file62/viewer.js
+
+      - name: Verify input data and compute control statistics
+        run: python3 investigation/file62/analyze.py --output investigation/file62/analysis-results.json
+
       - name: Prepare static web files
         run: |
           mkdir -p _site/investigation/file62
