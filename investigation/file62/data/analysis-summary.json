@@ -1,0 +1,125 @@
+{
+  "case": "BTCX File 62 — verified quantitative analysis",
+  "measured_on": "2026-11-25",
+  "method": "Python standard-library analysis of the 5,892,736-byte SPLAT on GitHub Actions; not a full 3D scene semantic classifier.",
+  "workflow_url": "https://github.com/orbiterdevelopment/btcx-files/actions/runs/45570878866",
+  "source_sha256": {
+    "original": "c945b02e56ee9ecc649149c854f235cfd305a896d86e38a334a97f6111e57fae",
+    "splat": "b7c43ef7335805ca6da1122e43209aff612aa261443325f1762ea5aae7b43a9f",
+    "ply": "a5c6fe452c0635fddef04ae184adcfa17d829604a33221c12a2d3bcd157e2bd8"
+  },
+  "counts": {
+    "all_records": 184148,
+    "published_figure_box": 1414,
+    "published_zoom_fog_removed": 23758
+  },
+  "regions": {
+    "figure": {
+      "count": 1414,
+      "median_opacity": 0.13137254901960785,
+      "remaining_at_opacity": {
+        "0": 1414,
+        "0.25": 363,
+        "0.5": 144,
+        "0.75": 65
+      },
+      "connectivity": [
+        {
+          "distance": 0.15,
+          "components": 66,
+          "largest": 648
+        },
+        {
+          "distance": 0.3,
+          "components": 3,
+          "largest": 1026
+        },
+        {
+          "distance": 0.6,
+          "components": 1,
+          "largest": 1414
+        }
+      ],
+      "pca_eigenvalues": [
+        0.232372686867797,
+        0.5236722614295937,
+        0.9116462016136159
+      ],
+      "pca_smallest_fraction": 0.13933796247596394
+    },
+    "left_control": {
+      "count": 2398,
+      "median_opacity": 0.20784313725490197,
+      "remaining_at_opacity": {
+        "0": 2398,
+        "0.25": 1020,
+        "0.5": 452,
+        "0.75": 183
+      },
+      "connectivity": [
+        {
+          "distance": 0.15,
+          "components": 52,
+          "largest": 1956
+        },
+        {
+          "distance": 0.3,
+          "components": 5,
+          "largest": 2378
+        },
+        {
+          "distance": 0.6,
+          "components": 2,
+          "largest": 2397
+        }
+      ],
+      "pca_eigenvalues": [
+        0.19706081825194344,
+        0.2903460787659654,
+        0.8848268803431089
+      ],
+      "pca_smallest_fraction": 0.1436058647608258
+    },
+    "right_control": {
+      "count": 339,
+      "median_opacity": 0.23529411764705882,
+      "remaining_at_opacity": {
+        "0": 339,
+        "0.25": 160,
+        "0.5": 64,
+        "0.75": 19
+      },
+      "connectivity": [
+        {
+          "distance": 0.15,
+          "components": 72,
+          "largest": 198
+        },
+        {
+          "distance": 0.3,
+          "components": 5,
+          "largest": 334
+        },
+        {
+          "distance": 0.6,
+          "components": 1,
+          "largest": 339
+        }
+      ],
+      "pca_eigenvalues": [
+        0.015877293466055483,
+        0.18456131747295612,
+        0.7248736837313806
+      ],
+      "pca_smallest_fraction": 0.01715884848553879
+    }
+  },
+  "warnings": [
+    "Connectivity is computed from point centers, not volumetric surfaces or splat ellipsoids.",
+    "Equal-volume left and right control regions have different point density and opacity; their connectivity is not directly comparable without matching.",
+    "Bounding-box selection affects shape covariance and apparent planarity.",
+    "These statistics do not identify any cluster as a human or a building.",
+    "The source's historical provenance is unverified."
+  ],
+  "full_report": "https://github.com/orbiterdevelopment/btcx-files/actions/runs/45570878866/artifacts/15002270949"
+}

@@ -1,0 +1,53 @@
+name: Verify BTCX File 62 Data
+
+on:
+  push:
+    branches:
+      - btc-x/file62-investigation-viewer
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'investigation/file62/**'
+      - '.github/workflows/btcx-file62-verify.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check viewer JavaScript syntax
+        run: node --check investigation/file62/viewer.js
+      - name: Verify export hashes, selected coordinates and controls
+        run: python3 investigation/file62/analyze.py --output investigation/file62/analysis-results.json
+      - name: Browser WebGL2 smoke test (headless Chrome)
+        shell: bash
+        run: |
+          python3 -m http.server 8765 --directory investigation/file62 >/tmp/btcx-http.log 2>&1 &
+          server=$!
+          trap 'kill "$server" || true' EXIT
+          sleep 2
+          chrome=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)
+          if [ -z "$chrome" ]; then
+            echo "Chrome not installed on runner; cannot verify browser." >&2
+            exit 1
+          fi
+          timeout 90 "$chrome" --headless=new --no-sandbox --disable-dev-shm-usage --enable-unsafe-swiftshader --use-angle=swiftshader --enable-webgl --virtual-time-budget=20000 --dump-dom http://127.0.0.1:8765/ >/tmp/btcx-dom.txt 2>/tmp/btcx-chrome.log
+          if ! grep -q "Loaded 184,148 splats" /tmp/btcx-dom.txt; then
+            echo "Viewer did not report successful loading:" >&2
+            grep -E "id=\"status\"|id=\"counts\"|id=\"verification\"" /tmp/btcx-dom.txt | tail -10 >&2 || true
+            tail -30 /tmp/btcx-chrome.log >&2 || true
+            exit 1
+          fi
+          echo "Browser viewer loaded real SPLAT dataset successfully."
+      - name: Upload measurements
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: btcx-file62-analysis
+          path: investigation/file62/analysis-results.json
+          if-no-files-found: warn

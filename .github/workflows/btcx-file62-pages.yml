@@ -1,0 +1,57 @@
+name: Publish BTCX File 62 Explorer
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'investigation/file62/**'
+      - '.github/workflows/btcx-file62-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: btcx-pages
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Check viewer JavaScript syntax
+        run: node --check investigation/file62/viewer.js
+
+      - name: Verify input data and compute control statistics
+        run: python3 investigation/file62/analyze.py --output investigation/file62/analysis-results.json
+
+      - name: Prepare static web files
+        run: |
+          mkdir -p _site/investigation/file62
+          cp -R investigation/file62/. _site/investigation/file62/
+          cp README.md _site/README.md
+          cp 20180208_1142.bin _site/20180208_1142.bin
+          printf '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=./investigation/file62/"><title>BTCX File 62</title></head><body><a href="./investigation/file62/">Open BTCX File 62 investigation</a></body></html>' > _site/index.html
+          touch _site/.nojekyll
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
